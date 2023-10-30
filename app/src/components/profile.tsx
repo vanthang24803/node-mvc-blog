@@ -7,22 +7,27 @@ import axios from "axios";
 import { Card } from "./card";
 import { useModal } from "@/hooks/use-modal-store";
 import { SettingUser } from "./setting-user";
+import { useBlog } from "./provider/blog-provider";
 
 export const Profile = () => {
   const { user } = useUser();
   const { onOpen } = useModal();
-  const [data, setData] = useState([]);
+  const { blog, setBlog } = useBlog();
   const [currentTab, setCurrentTab] = useState("Posts");
+  
   useEffect(() => {
     if (user?._id) {
       axios
         .get(`${import.meta.env.VITE_URL_API}/profile/${user._id}`)
         .then((response) => {
-          setData(response.data);
+          if (Array.isArray(response.data)) {
+            setBlog(response.data);
+          }
         })
         .catch((err) => console.log(err));
     }
   }, [user]);
+  
 
   return (
     <>
@@ -95,9 +100,9 @@ export const Profile = () => {
           </div>
           {currentTab == "Posts" && (
             <>
-              {data.length != 0 ? (
+              {blog?.length != 0 ? (
                 <div className="my-20 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
-                  <Card data={data} />
+                  <Card data={blog} />
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center space-y-2 pb-2">

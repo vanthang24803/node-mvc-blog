@@ -4,9 +4,11 @@ import App from "./App.tsx";
 import "./App.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { UserContextProvider } from "./components/provider/user-provider.tsx";
-import Post from "./Post.tsx";
-import { Blog } from "./Blog.tsx";
+import Post from "./post.tsx";
+import { Blog } from "./blog.tsx";
 import { User } from "./user.tsx";
+import { Update } from "./update.tsx";
+import { BlogContextProvider } from "./components/provider/blog-provider.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -24,12 +26,18 @@ const router = createBrowserRouter([
     path: "/infomation",
     element: <User />,
   },
+  {
+    path: "/update/:id",
+    element: <Update />,
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <UserContextProvider>
-      <RouterProvider router={router} />
+      <BlogContextProvider>
+        <RouterProvider router={router} />
+      </BlogContextProvider>
     </UserContextProvider>
   </React.StrictMode>
 );

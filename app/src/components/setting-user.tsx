@@ -78,9 +78,11 @@ export const SettingUser = () => {
     } catch (error) {
       toast.dismiss();
       toast.error("Something went wrong!");
+      setLoading(false);
     } finally {
       setTimeout(() => {
         toast.dismiss();
+        setLoading(false);
       }, 1000);
     }
   };

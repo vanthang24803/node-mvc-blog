@@ -297,3 +297,84 @@ app.put("/profile/:userId", uploadMiddleware.single("image"), async (req, res) =
     res.status(500).send("Server Error");
   }
 });
+
+app.put("/post/:id", uploadMiddleware.single("image"), async (req, res) => {
+  try {
+    const { title, description, content } = req.body;
+    const { id } = req.params;
+
+    const post = await Post.findById(id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const { token } = req.cookies;
+    if (!token) {
+      return res.status(401).json({ error: "No token provided" });
+    }
+
+    jwt.verify(token, secret, {}, async (err, info) => {
+      if (err) throw err;
+
+      let imageUrl = post.image;
+      if (req.file) {
+        let result;
+        try {
+          result = await cloudinary.uploader.upload(req.file.path);
+          imageUrl = result.secure_url;
+        } catch (error) {
+          console.error("Error uploading to Cloudinary", error);
+          return res.status(500).json({ message: "Error uploading to Cloudinary" });
+        }
+        fs.unlinkSync(req.file.path);
+      }
+
+      const updatedPost = await Post.findByIdAndUpdate(
+        id,
+        {
+          title: title !== "" ? title : post.title,
+          description: description !== "" ? description : post.description,
+          content: content !== "" ? content : post.content,
+          image: imageUrl,
+        },
+        { new: true }
+      );
+
+      res.json(updatedPost);
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Something went wrong in /update route!" });
+  }
+});
+
+app.delete("/post/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const { token } = req.cookies;
+    if (!token) {
+      return res.status(401).json({ error: "No token provided" });
+    }
+
+    jwt.verify(token, secret, {}, async (err, info) => {
+      if (err) throw err;
+
+      const post = await Post.findById(id);
+      if (!post) {
+        return res.status(404).json({ message: "Post not found" });
+      }
+
+      if (post.author.toString() !== info.id) {
+        return res.status(403).json({ error: "You are not authorized to delete this post" });
+      }
+
+      await Post.findByIdAndDelete(id);
+
+      res.json({ message: "Post deleted successfully" });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Something went wrong in /delete route!" });
+  }
+});

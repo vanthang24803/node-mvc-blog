@@ -13,7 +13,6 @@ const Navbar = () => {
         withCredentials: true,
       })
       .then((response) => {
-        console.log(response.data )
         setUser(response.data);
       });
   }, []);

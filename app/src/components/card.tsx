@@ -2,16 +2,16 @@ import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Blog } from "type";
 import { format } from "date-fns";
-import { MoreHorizontal } from "lucide-react";
+import { SubDrop } from "./subdrop";
 
 interface CardProps {
-  data: Blog[];
+  data: Blog[] | null;
 }
 
 export const Card = ({ data }: CardProps) => {
   return (
     <>
-      {data.map((card) => (
+      {data?.map((card) => (
         <div className="w-full flex flex-col" key={card._id}>
           <Link to={`/post/${card._id}`} key={card._id}>
             <img
@@ -46,7 +46,7 @@ export const Card = ({ data }: CardProps) => {
                     ? format(new Date(card.updatedAt), "dd/MM/yyyy HH:mm:ss")
                     : ""}
                 </span>
-                <MoreHorizontal />
+                <SubDrop blog={card} />
               </div>
             )}
             {card.author._id && (
