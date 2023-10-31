@@ -14,7 +14,7 @@ export const HeaderMain = () => {
           <h1 className="lg:text-6xl md:text-4xl text-4xl font-bold">
             The next gen of notes and blogs.
           </h1>
-          <span className="lg:text-xl text-base">
+          <span className="lg:text-lg text-base">
             Simple. Powerful. Beautiful. Communicate more efficiently with
             Notion’s flexible building blocks.
           </span>
@@ -23,7 +23,7 @@ export const HeaderMain = () => {
               <Button>Create new blog now ! 👏</Button>
             </Link>
           ) : (
-            <Button onClick={() => onOpen("login")}>
+            <Button onClick={() => onOpen("login")} className="md:w-1/2">
               Login Here 🚀
             </Button>
           )}
@@ -50,14 +50,10 @@ export const HeaderMain = () => {
           </span>
           {user ? (
             <Link to="/post">
-              <Button>
-                Create new blog now ! 👏
-              </Button>
+              <Button>Create new blog now ! 👏</Button>
             </Link>
           ) : (
-            <Button onClick={() => onOpen("login")}>
-              Login Here 🚀
-            </Button>
+            <Button onClick={() => onOpen("login")}>Login Here 🚀</Button>
           )}
         </div>
       </div>

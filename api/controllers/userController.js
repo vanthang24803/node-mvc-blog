@@ -71,7 +71,15 @@ export const logout = async (req, res) => {
 };
 
 export const getProfile = async (req, res) => {
+  if (!req.cookies) {
+    return res.status(400).send({ message: "No cookies provided" });
+  }
+
   const { token } = req.cookies;
+  if (!token) {
+    return res.status(400).send({ message: "No token provided" });
+  }
+
   jwt.verify(token, secret, {}, async (err, info) => {
     if (err) throw err;
     try {
@@ -85,6 +93,7 @@ export const getProfile = async (req, res) => {
     }
   });
 };
+
 
 export const getProfileById = async (req, res) => {
   try {
