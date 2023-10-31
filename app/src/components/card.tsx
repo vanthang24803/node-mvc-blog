@@ -6,9 +6,10 @@ import { SubDrop } from "./subdrop";
 
 interface CardProps {
   data: Blog[] | null;
+  idMember?: string | null;
 }
 
-export const Card = ({ data }: CardProps) => {
+export const Card = ({ data, idMember }: CardProps) => {
   return (
     <>
       {data?.map((card) => (
@@ -35,19 +36,26 @@ export const Card = ({ data }: CardProps) => {
             </Link>
             {card.author._id ? (
               <span className="text-neutral-800 lg:text-base md:text-sm">
-                {card.updatedAt
-                  ? format(new Date(card.updatedAt), "dd/MM/yyyy HH:mm:ss")
-                  : ""}
+                {card.updatedAt &&
+                  format(new Date(card.updatedAt), "dd/MM/yyyy HH:mm:ss")}
               </span>
             ) : (
-              <div className="flex items-center justify-between">
-                <span className="text-neutral-800 lg:text-base md:text-sm">
-                  {card.updatedAt
-                    ? format(new Date(card.updatedAt), "dd/MM/yyyy HH:mm:ss")
-                    : ""}
-                </span>
-                <SubDrop blog={card} />
-              </div>
+              <>
+                {idMember ? (
+                  <span className="text-neutral-800 lg:text-base md:text-sm">
+                    {card.updatedAt &&
+                      format(new Date(card.updatedAt), "dd/MM/yyyy HH:mm:ss")}
+                  </span>
+                ) : (
+                  <div className="flex items-center justify-between">
+                    <span className="text-neutral-800 lg:text-base md:text-sm">
+                      {card.updatedAt &&
+                        format(new Date(card.updatedAt), "dd/MM/yyyy HH:mm:ss")}
+                    </span>
+                    <SubDrop blog={card} />
+                  </div>
+                )}
+              </>
             )}
             {card.author._id && (
               <div className="flex space-x-2 items-center">

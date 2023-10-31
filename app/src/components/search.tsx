@@ -1,17 +1,21 @@
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 import {
   CommandDialog,
   CommandEmpty,
-  CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import { Blog } from "type";
+import { Link } from "react-router-dom";
 
 export const SearchCommand = () => {
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<Blog[]>([]);
 
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
@@ -23,6 +27,23 @@ export const SearchCommand = () => {
     document.addEventListener("keydown", down);
     return () => document.removeEventListener("keydown", down);
   }, []);
+
+  useEffect(() => {
+    if (query) {
+      axios
+        .get(
+          `${import.meta.env.VITE_URL_API}/post?query=${encodeURIComponent(
+            query
+          )}`
+        )
+        .then((response) => {
+          setResults(response.data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
+  }, [query]);
 
   return (
     <>
@@ -39,34 +60,23 @@ export const SearchCommand = () => {
         </kbd>
       </button>
       <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Search all blogs and bloggers" />
+        <CommandInput
+          placeholder="Search all blogs and bloggers"
+          value={query}
+          onValueChange={setQuery}
+        />
         <CommandList>
-          <CommandEmpty>No Results found</CommandEmpty>
-          {/* {data.map(({ label, type, data }) => {
-            if (!data?.length) return null;
-
-            return (
-              <CommandGroup key={label} heading={label}>
-                {data?.map(({ id, icon, name }) => {
-                  return (
-                    <CommandItem
-                      key={id}
-                      onSelect={() => onClick({ id, type })}
-                    >
-                      {icon}
-                      <span>{name}</span>
-                    </CommandItem>
-                  );
-                })}
-              </CommandGroup>
-            );
-            
-          })} */}
-          <CommandGroup>
-            <CommandItem>
-              <p>search</p>
-            </CommandItem>
-          </CommandGroup>
+          {results.length == 0 ? (
+            <CommandEmpty>No Results found</CommandEmpty>
+          ) : (
+            results.map((result, index) => (
+              <Link to={`/post/${result._id}`}>
+                <CommandItem key={index}>
+                  <span className="px-6 cursor-pointer">{result.title}</span>
+                </CommandItem>
+              </Link>
+            ))
+          )}
         </CommandList>
       </CommandDialog>
     </>

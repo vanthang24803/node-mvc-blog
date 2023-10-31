@@ -4,12 +4,14 @@ import { MoveLeft } from "lucide-react";
 import { format } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SocialShare } from "./social-share";
+import { useUser } from "./provider/user-provider";
 
 interface BlogContainerProps {
   blog: Blog | null;
 }
 
 export const BlogContainer = ({ blog }: BlogContainerProps) => {
+  const { user } = useUser();
   return (
     <div className="flex flex-col lg:space-y-8 md:space-y-6 space-y-4 pb-10">
       <Link to="/" className="flex items-center space-x-4 group">
@@ -27,9 +29,19 @@ export const BlogContainer = ({ blog }: BlogContainerProps) => {
               : ""}{" "}
             in
           </span>
-          <Link to={`/profile/${blog?.author._id}`}>
-            <span className="underline hover:text-blue-500">Personal Blog</span>
-          </Link>
+          {blog?.author._id == user?._id ? (
+            <Link to="/infomation">
+              <span className="underline hover:text-blue-500">
+                Personal Blog
+              </span>
+            </Link>
+          ) : (
+            <Link to={`/profile/${blog?.author._id}`}>
+              <span className="underline hover:text-blue-500">
+                Personal Blog
+              </span>
+            </Link>
+          )}
         </div>
         <h1 className="text-4xl md:text-5xl font-bold">{blog?.title}</h1>
         <div className="flex items-center space-x-4">

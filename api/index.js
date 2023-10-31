@@ -208,7 +208,7 @@ app.post("/post", uploadMiddleware.single("image"), async (req, res) => {
   }
 });
 
-app.get("/post", async (req, res) => {
+app.get("/posts", async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const elementPage = 10;
 
@@ -246,6 +246,24 @@ app.get("/profile/:userId", async (req, res) => {
     res.json(posts);
   } catch (error) {
     console.log(err);
+    res.status(500).json({ message: "Server error !" });
+  }
+});
+
+app.get("/member/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+    const posts = await Post.find({ author: userId });
+    res.json({
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      imageUrl: user.imageUrl,
+      posts: posts,
+    });
+  } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Server error !" });
   }
 });
@@ -377,4 +395,22 @@ app.delete("/post/:id", async (req, res) => {
     console.error(error);
     res.status(500).json({ message: "Something went wrong in /delete route!" });
   }
+});
+
+app.get("/post", async (req, res) => {
+  const { query } = req.query;
+
+  if (query) {
+    const users = await User.find({
+      $or: [{ firstName: new RegExp(query, "i") }, { lastName: new RegExp(query, "i") }],
+    });
+
+    const postsFromTitle = await Post.find({ title: new RegExp(query, "i") });
+    const postsFromAuthor = await Post.find({ author: { $in: users.map(user => user._id) } });
+
+    const posts = [...postsFromTitle, ...postsFromAuthor];
+    return res.json(posts);
+  }
+
+  res.status(400).json({ error: "Invalid query parameters." });
 });

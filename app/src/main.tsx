@@ -9,6 +9,9 @@ import { Blog } from "./blog.tsx";
 import { User } from "./user.tsx";
 import { Update } from "./update.tsx";
 import { BlogContextProvider } from "./components/provider/blog-provider.tsx";
+import { Member } from "./member.tsx";
+import { ErrorPage } from "./components/error.tsx";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -29,6 +32,14 @@ const router = createBrowserRouter([
   {
     path: "/update/:id",
     element: <Update />,
+  },
+  {
+    path: "/profile/:id",
+    element: <Member />,
+  },
+  {
+    path: "*",
+    element: <ErrorPage />,
   },
 ]);
 

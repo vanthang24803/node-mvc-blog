@@ -9,7 +9,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const fetchPosts = (page: number) => {
     axios
-      .get(`${import.meta.env.VITE_URL_API}/post?page=${page}`)
+      .get(`${import.meta.env.VITE_URL_API}/posts?page=${page}`)
       .then((response) => {
         setPosts(response.data.posts);
         setTotalPages(response.data.totalPages);
