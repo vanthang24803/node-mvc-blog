@@ -1,15 +1,15 @@
 import express from "express";
 import { config } from "dotenv";
-import mongoose from "mongoose";
 import cors from "cors";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
-import multer from "multer";
 import fs from "fs";
 
-import path from "path";
 import { v2 as cloudinary } from "cloudinary";
+import connect from "./config/db.js";
+import configureCloudinary from './config/cloudinary.js'
+import uploadMiddleware from './config/multer.js'
 
 import User from "./models/User.js";
 import Post from "./models/Post.js";
@@ -18,6 +18,7 @@ config();
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+connect();
 
 // Set up CORS options
 const corsOptions = {
@@ -27,52 +28,20 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"],
 };
 
-cloudinary.config({
-  cloud_name: process.env.CLOUND_NAME,
-  api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET,
-});
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname));
-  },
-});
-
-const upload = multer({
-  limits: {
-    fieldSize: 4 * 1024 * 1024,
-  },
-});
-
-const uploadMiddleware = multer({ storage: storage });
-
 app.use(cors(corsOptions));
+configureCloudinary();
 
 const port = process.env.PORT || 3000;
 const secret = process.env.SECRET_TOKEN;
+
+app.listen(port, () => {
+  console.log(`Server listing in port ${port}`);
+});
 
 app.get("/", (request, response) => {
   response.status(200).json("Hello World");
 });
 
-const connect = async () => {
-  try {
-    await mongoose.connect(process.env.DATABASE_URL);
-    console.log("Database Connected !");
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-connect();
-
-app.listen(port, () => {
-  console.log(`Server listing in port ${port}`);
-});
 
 app.post("/register", async (req, res) => {
   const { email, password, firstName, lastName } = req.body;
