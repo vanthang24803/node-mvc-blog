@@ -61,6 +61,7 @@ export const UpdateContainer = ({ data }: BlogContainerProps) => {
         toast.dismiss();
         toast.success("Success");
         setLoading(false);
+        window.location.href = `/post/${data?._id}`;
       }
     } catch (error) {
       setLoading(false);

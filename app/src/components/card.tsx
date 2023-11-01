@@ -35,20 +35,20 @@ export const Card = ({ data, idMember }: CardProps) => {
               </span>
             </Link>
             {card.author._id ? (
-              <span className="text-neutral-800 lg:text-base md:text-sm">
+              <span className="text-neutral-700 lg:text-base md:text-sm">
                 {card.updatedAt &&
-                  format(new Date(card.updatedAt), "dd/MM/yyyy HH:mm:ss")}
+                  format(new Date(card.updatedAt), "MMMM dd, yyyy")}
               </span>
             ) : (
               <>
                 {idMember ? (
-                  <span className="text-neutral-800 lg:text-base md:text-sm">
+                  <span className="text-neutral-700 lg:text-base md:text-sm">
                     {card.updatedAt &&
                       format(new Date(card.updatedAt), "dd/MM/yyyy HH:mm:ss")}
                   </span>
                 ) : (
                   <div className="flex items-center justify-between">
-                    <span className="text-neutral-800 lg:text-base md:text-sm">
+                    <span className="text-neutral-700 lg:text-base md:text-sm">
                       {card.updatedAt &&
                         format(new Date(card.updatedAt), "dd/MM/yyyy HH:mm:ss")}
                     </span>

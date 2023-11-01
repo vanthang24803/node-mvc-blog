@@ -4,18 +4,22 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Blog, UserType } from "type";
 import { Card } from "./components/card";
+import { CardLoading } from "./components/card-loading";
 
 export const Member = () => {
   const [currentTab, setCurrentTab] = useState("Posts");
   const [member, setMember] = useState<UserType | null>(null);
   const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     axios
       .get(`${import.meta.env.VITE_URL_API}/member/${id}`)
       .then((response) => {
         setMember(response.data);
         setBlogs(response.data.posts);
+        setLoading(false);
       })
       .catch((err) => console.log(err));
   }, []);
@@ -78,7 +82,11 @@ export const Member = () => {
           <>
             {blogs.length != 0 ? (
               <div className="my-20 grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
-                <Card data={blogs} idMember={id} />
+                {loading ? (
+                  <CardLoading />
+                ) : (
+                  <Card data={blogs} idMember={id} />
+                )}
               </div>
             ) : (
               <div className="flex flex-col items-center justify-center space-y-2 pb-2">

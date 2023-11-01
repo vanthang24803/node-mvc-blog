@@ -5,6 +5,7 @@ import { format } from "date-fns";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SocialShare } from "./social-share";
 import { useUser } from "./provider/user-provider";
+import { useNavigate } from "react-router-dom";
 
 interface BlogContainerProps {
   blog: Blog | null;
@@ -12,9 +13,17 @@ interface BlogContainerProps {
 
 export const BlogContainer = ({ blog }: BlogContainerProps) => {
   const { user } = useUser();
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col lg:space-y-8 md:space-y-6 space-y-4 pb-10">
-      <Link to="/" className="flex items-center space-x-4 group">
+      <Link
+        to="/"
+        className="flex items-center space-x-4 group"
+        onClick={(e) => {
+          e.preventDefault();
+          navigate(-1);
+        }}
+      >
         <MoveLeft className="group-hover:-translate-x-2 transition-all ease-in-out" />
         <span className="text-neutral-600 group-hover:text-neutral-800">
           All posts

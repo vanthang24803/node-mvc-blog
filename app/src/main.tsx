@@ -11,6 +11,7 @@ import { Update } from "./update.tsx";
 import { BlogContextProvider } from "./components/provider/blog-provider.tsx";
 import { Member } from "./member.tsx";
 import { ErrorPage } from "./components/error.tsx";
+import { Test } from "./test.tsx";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
     path: "*",
     element: <ErrorPage />,
   },
+  {
+    path : "/test",
+    element : <Test />
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
