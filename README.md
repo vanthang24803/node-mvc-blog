@@ -61,5 +61,6 @@ Build Docker Image
 
 ## Screenshots
 
-![App Screenshot](https://via.placeholder.com/468x300?text=App+Screenshot+Here)
+![App Screenshot](![image](https://github.com/vanthang24803/node-mvc-blog/assets/101810628/fbf54da1-8fb2-4cfb-be57-6dc16a8505f2)
+)
 
